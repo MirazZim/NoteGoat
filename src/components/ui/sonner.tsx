@@ -1,3 +1,4 @@
+// Updated Toaster component
 "use client"
 
 import { useTheme } from "next-themes"
@@ -10,13 +11,15 @@ const Toaster = ({ ...props }: ToasterProps) => {
     <Sonner
       theme={theme as ToasterProps["theme"]}
       className="toaster group"
-      style={
-        {
-          "--normal-bg": "var(--popover)",
-          "--normal-text": "var(--popover-foreground)",
-          "--normal-border": "var(--border)",
-        } as React.CSSProperties
-      }
+      toastOptions={{
+        style: {
+          color: "hsl(var(--foreground))",
+          border: "1px solid hsl(var(--border))",
+          borderRadius: "calc(var(--radius) - 2px)",
+          boxShadow: "var(--shadow-md)",
+        },
+        unstyled: false,
+      }}
       {...props}
     />
   )
