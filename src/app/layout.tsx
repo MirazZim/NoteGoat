@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./styles/globals.css";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import { Toaster } from "@/components/ui/sonner";
+import Header from "@/components/Header";
 
 export const metadata: Metadata = {
   title: "Note GOAT"
@@ -21,9 +22,14 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <div className="flex min-h-screen w-full flex-col">
+          <Header/>
+          <main className="flex flex-1 flex-col px-4 pt-10 xl:px-8">
           {children}
+          </main>
 
           <Toaster/>
+          </div>
         </ThemeProvider>
       </body>
     </html>
