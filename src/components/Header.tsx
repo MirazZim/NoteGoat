@@ -6,7 +6,7 @@ import { Button } from './ui/button'
 import DarkModeToggle from './DarkModeToggle'
 
 import { getUser } from '@/app/auth/server'
-import LogOutButton from './LogOutButton'
+import LogOutButton from './LogoutButton'
 
 const Header = async () => {
 

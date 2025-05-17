@@ -44,7 +44,6 @@ const AuthForm = ({ type }: Props) => {
               duration: 5000,
               position: "top-center",
               style: {
-                background: "hsl(var(--background))",
                 color: "hsl(var(--foreground))",
                 border: "1px solid hsl(var(--border))",
                 borderRadius: "calc(var(--radius) - 2px)",
