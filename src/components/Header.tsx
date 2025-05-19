@@ -7,6 +7,7 @@ import DarkModeToggle from './DarkModeToggle'
 
 import { getUser } from '@/app/auth/server'
 import LogOutButton from './LogoutButton'
+import { SidebarTrigger } from './ui/sidebar'
 
 const Header = async () => {
 
@@ -17,6 +18,7 @@ const user = await getUser();
     style={{
       boxShadow: shadow
     }}>
+      <SidebarTrigger className='absolute left-1 top-1'/>
           <Link className="flex items-end gap-2" href="/">
         <Image
           src="/goatius.png"
