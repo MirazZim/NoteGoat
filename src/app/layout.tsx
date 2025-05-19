@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/sonner";
 import Header from "@/components/Header";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import AppSidebar from "@/components/AppSidebar";
+import NoteProvider from "@/providers/NoteProvider";
 
 
 export const metadata: Metadata = {
@@ -24,7 +25,8 @@ export default function RootLayout({
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
-        >
+          >
+        <NoteProvider>
         <SidebarProvider>
 
         <AppSidebar />
@@ -44,6 +46,8 @@ export default function RootLayout({
           
 
           <Toaster/>
+            
+          </NoteProvider>
         </ThemeProvider>
       </body>
     </html>

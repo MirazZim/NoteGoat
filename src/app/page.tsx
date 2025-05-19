@@ -5,6 +5,7 @@ import AskAIButton from '@/components/AskAIButton';
 import NewNoteButton from '@/components/NewNoteButton';
 import NoteTextInput from '@/components/NoteTextInput';
 
+
 type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
@@ -28,11 +29,11 @@ async function HomePage({ searchParams }: Props) {
       <div className="flex w-full max-w-4xl justify-end gap-2">
 
       <AskAIButton user={user} />
-      {/* <NewNoteButton  /> */}
+      <NewNoteButton user= {user} />
         
       </div>
 
-      <NoteTextInput />
+      <NoteTextInput noteId={noteId} startingNoteText={note?.text || ""} />
 
     </div>
   )
