@@ -23,41 +23,87 @@ export const config = {
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
-  }) 
+  })
 
-  console.log("middleware ran")
+  const supabase = createServerClient(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value }) =>
+            request.cookies.set(name, value),
+          );
+          supabaseResponse = NextResponse.next({
+            request,
+          });
+          cookiesToSet.forEach(({ name, value, options }) =>
+            supabaseResponse.cookies.set(name, value, options),
+          );
+        },
+      },
+    },
+  );
 
-//   const supabase = createServerClient(
-//     process.env.SUPABASE_URL!,
-//     process.env.SUPABASE_ANON_KEY!,
-//     {
-//       cookies: {
-//         getAll() {
-//           return request.cookies.getAll()
-//         },
-//         setAll(cookiesToSet) {
-//           cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
-//           supabaseResponse = NextResponse.next({
-//             request,
-//           })
-//           cookiesToSet.forEach(({ name, value, options }) =>
-//             supabaseResponse.cookies.set(name, value, options)
-//           )
-//         },
-//       },
-//     }
-//   )
+  // Check if the request is for the login or sign-up page.
+  const isAuthRoute =
+    request.nextUrl.pathname === "/login" ||
+    request.nextUrl.pathname === "/sign-up";
 
-  // Do not run code between createServerClient and
-  // supabase.auth.getUser(). A simple mistake could make it very hard to debug
-  // issues with users being randomly logged out.
+  // If the user is already logged in, redirect them to the homepage.
+  if (isAuthRoute) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (user) {
+      return NextResponse.redirect(
+        new URL("/", process.env.NEXT_PUBLIC_BASE_URL),
+      );
+    }
+  }
 
-  // IMPORTANT: DO NOT REMOVE auth.getUser()
+  // Get the search parameters and pathname from the request URL.
+  const { searchParams, pathname } = new URL(request.url);
 
-//   const {
-//     data: { user },
-//   } = await supabase.auth.getUser()
+  // If the request is for the homepage, and there is no noteId search parameter,
+  // then try to find the newest note for the user.
+  if (!searchParams.get("noteId") && pathname === "/") {
+    // Get the user from the session.
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
+    if (user) {
+      // Get the ID of the newest note for the user.
+      const { newestNoteId } = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/fetch-newest-note?userId=${user.id}`,
+      ).then((res) => res.json());
+
+      // If we found a newest note for the user, redirect to it.
+      if (newestNoteId) {
+        const url = request.nextUrl.clone();
+        url.searchParams.set("noteId", newestNoteId);
+        return NextResponse.redirect(url);
+      } else {
+        // If there is no newest note, create a new one.
+        const { noteId } = await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/create-new-notes?userId=${user.id}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
+        ).then((res) => res.json());
+        const url = request.nextUrl.clone();
+        url.searchParams.set("noteId", noteId);
+        return NextResponse.redirect(url);
+      }
+    }
+  }
 
   return supabaseResponse
 }
