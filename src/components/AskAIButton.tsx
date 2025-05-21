@@ -70,12 +70,12 @@ const AskAIButton = ({ user }: Props) => {
     // Handle bold text
     formattedText = formattedText.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
     // Handle lists
-    formattedText = formattedText.replace(/(\d+\.\s+)(.*?)(?=\n\d+\.|$)/gs, (match, num, content) => {
+    formattedText = formattedText.replace(/(\d+\.\s+)(.*?)(?=\n\d+\.|$)/g, (match, num, content) => {
       return `<li>${content.trim()}</li>`;
     });
     // Wrap lists in ol tags
     if (formattedText.includes("<li>")) {
-      formattedText = formattedText.replace(/(<li>.*?<\/li>)+/gs, "<ol>$&</ol>");
+      formattedText = formattedText.replace(/(<li>.*?<\/li>)+/g, "<ol>$&</ol>");
     }
     // Wrap content in paragraph tags
     if (!formattedText.startsWith("<p>")) {
