@@ -29,7 +29,7 @@ function AskAIButton({ user }: Props) {
   const [open, setOpen] = useState(false);
   const [questionText, setQuestionText] = useState("");
   const [questions, setQuestions] = useState<string[]>([]);
-  const [responses, setResponses] = useState<string[]>([]);
+  const [responses, setResponses] = useState<Array<string | { errorMessage: string }>>([]);
 
   const handleOnOpenChange = (isOpen: boolean) => {
     if (!user) {
@@ -68,7 +68,9 @@ function AskAIButton({ user }: Props) {
     setTimeout(scrollToBottom, 100);
 
     startTransition(async () => {
-      const response = await askAIAboutNotesAction(newQuestions, responses);
+      // Filter out error objects and only pass string responses to the action
+      const stringResponses = responses.filter((r): r is string => typeof r === 'string');
+      const response = await askAIAboutNotesAction(newQuestions, stringResponses);
       setResponses((prev) => [...prev, response]);
 
       setTimeout(scrollToBottom, 100);
@@ -112,10 +114,18 @@ function AskAIButton({ user }: Props) {
                 {question}
               </p>
               {responses[index] && (
-                <p
-                  className="bot-response text-muted-foreground text-sm"
-                  dangerouslySetInnerHTML={{ __html: responses[index] }}
-                />
+                <div className="text-muted-foreground text-sm">
+                  {typeof responses[index] === 'string' ? (
+                    <p 
+                      className="bot-response"
+                      dangerouslySetInnerHTML={{ __html: responses[index] as string }}
+                    />
+                  ) : (
+                    <p className="text-red-500">
+                      Error: {(responses[index] as { errorMessage: string }).errorMessage}
+                    </p>
+                  )}
+                </div>
               )}
             </Fragment>
           ))}
