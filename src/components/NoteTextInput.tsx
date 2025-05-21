@@ -53,7 +53,31 @@ const NoteTextInput = ({ noteId, startingNoteText }: Props) => {
     value={noteText}
     onChange={handleUpdateNote}
     placeholder="Type your notes here.."
-    className="custom-scrollbar mb-4 h-full max-w-4xl resize-none border p-4 placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0"
+    className="
+  custom-scrollbar
+  mb-4
+  h-full
+  max-w-4xl
+  resize-none
+  border
+  border-zinc-200
+  dark:border-zinc-700
+  rounded-2xl
+  p-5
+  bg-white/60
+  dark:bg-zinc-900/70
+  shadow-md
+  text-base
+  font-medium
+  placeholder:text-zinc-400
+  focus:outline-none
+  focus:ring-2
+  focus:ring-blue-400
+  focus:border-blue-400
+  transition
+  duration-150
+  ease-in-out
+"
   />
   )
 }

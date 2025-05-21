@@ -66,7 +66,7 @@ type Props = {
         />
       </div>
 
-      <SidebarMenu className="mt-4">
+      <SidebarMenu className="mt-2 flex flex-col gap-2-4">
         {filteredNotes.map((note) => (
           <SidebarMenuItem key={note.id} className="group/item">
             <SelectNoteButton note={note} />
