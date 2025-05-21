@@ -42,13 +42,40 @@ const NewNoteButton = ({ user }: Props) => {
   }
   return (
     <Button
-      onClick={handleClickNewNoteButton}
-      variant="secondary"
-      className="w-24"
-      disabled={loading}
-    >
-      {loading ? <Loader2 className="animate-spin" /> : "New Note"}
-    </Button>
+  onClick={handleClickNewNoteButton}
+  variant="secondary"
+  className="
+   flex items-center justify-center gap-2
+rounded-full
+px-5 py-2
+font-semibold text-base
+shadow-md
+transition duration-150 ease-in-out
+bg-gradient-to-tr from-blue-500 to-indigo-500
+text-white
+hover:from-blue-600 hover:to-indigo-600
+disabled:opacity-70
+  "
+  disabled={loading}
+>
+  {loading ? (
+    <Loader2 className="animate-spin w-5 h-5" />
+  ) : (
+    <>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="w-5 h-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        strokeWidth={2}
+      >
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+      </svg>
+      New Note
+    </>
+  )}
+</Button>
   )
 }
 
