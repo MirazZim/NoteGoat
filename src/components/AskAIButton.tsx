@@ -93,8 +93,13 @@ const AskAIButton = ({ user }: Props) => {
     startTransition(async () => {
       try {
         const response = await askAIAboutNotesAction(newQuestions, responses);
-        // Format the response before adding it to the state
-        setResponses((prev) => [...prev, formatResponse(response)]);
+  
+        if (typeof response === "string") {
+          setResponses((prev) => [...prev, formatResponse(response)]);
+        } else if (response && typeof response === "object" && "errorMessage" in response) {
+          setError(response.errorMessage);
+          setResponses((prev) => [...prev, ""]);
+        }
       } catch (err) {
         setError((err as Error).message);
       } finally {
