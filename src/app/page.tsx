@@ -3,9 +3,9 @@
 import { redirect } from "next/navigation";
 import { getUser } from './auth/server';
 import { prisma } from '@/db/prisma';
-import AskAIButton from '@/components/AskAIButton';
 import NewNoteButton from '@/components/NewNoteButton';
 import NoteTextInput from '@/components/NoteTextInput';
+import AskAIButton from "@/components/AskAIButton";
 
 
 type Props = {

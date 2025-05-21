@@ -4,7 +4,7 @@ import { getUser } from "@/app/auth/server";
 import { prisma } from "@/db/prisma";
 import { buildAIPrompt, formatNotesForAI } from "@/lib/ai";
 import { handleError } from "@/lib/utils";
-import { CohereClientV2 } from 'cohere-ai';
+import { CohereClientV2 } from "cohere-ai";
 
 // Initialize the Cohere client with the API key
 const cohere = new CohereClientV2({
@@ -90,11 +90,11 @@ export const askAIAboutNotesAction = async (
     const formattedNotes = formatNotesForAI(notes);
     const prompt = buildAIPrompt(formattedNotes, conversation);
 
-     // Call Cohere's API to get the response
-     const response = await cohere.chat({
+    // Call Cohere's API to get the response
+    const response = await cohere.chat({
       model: "command-a-03-2025",
       messages: [
-        { role: "user", content: prompt }
+        { role: "user", content: prompt },
       ],
     });
 
