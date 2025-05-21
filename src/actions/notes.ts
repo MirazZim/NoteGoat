@@ -90,21 +90,28 @@ export const askAIAboutNotesAction = async (
     const formattedNotes = formatNotesForAI(notes);
     const prompt = buildAIPrompt(formattedNotes, conversation);
 
-    // Call Cohere's API to get the response
-    const response = await cohere.chat({
+     // Call Cohere's API to get the response
+     const response = await cohere.chat({
       model: "command-a-03-2025",
       messages: [
         { role: "user", content: prompt }
       ],
     });
 
-    // Access the generated text
-    // (Update this line based on the real structure you get back)
-    let responseText =
-      response?.message?.content?.[0]?.text ||
-      response?.message?.text ||
-      response?.text ||
-      "Could not generate response";
+    // Log to see the actual structure in your logs (remove after debugging)
+    // console.log(JSON.stringify(response, null, 2));
+
+    let responseText: string | undefined = undefined;
+    if (response?.message?.content) {
+      if (typeof response.message.content === "string") {
+        responseText = response.message.content;
+      } else if (Array.isArray(response.message.content) && response.message.content[0]?.text) {
+        responseText = response.message.content[0].text;
+      }
+    }
+    if (!responseText) {
+      responseText = "Could not generate response";
+    }
 
     // Basic HTML sanitization
     responseText = responseText
