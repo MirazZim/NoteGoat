@@ -17,7 +17,6 @@ import { Textarea } from "./ui/textarea";
 import { askAIAboutNotesAction } from "@/actions/notes";
 import { Spinner } from "./Spinner";
 
-
 type Props = {
   user: User | null;
 };
@@ -60,6 +59,39 @@ const AskAIButton = ({ user }: Props) => {
     textareaRef.current?.focus();
   };
 
+  // Function to format response for better display
+  const formatResponse = (text: string): string => {
+    // If response already contains HTML, return as is
+    if (text.includes("<p>") || text.includes("<div>")) {
+      return text;
+    }
+    
+    // Convert markdown-style formatting to HTML
+    
+    // Handle paragraphs
+    let formattedText = text.replace(/\n\n/g, "</p><p>");
+    
+    // Handle bold text
+    formattedText = formattedText.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+    
+    // Handle lists
+    formattedText = formattedText.replace(/(\d+\.\s+)(.*?)(?=\n\d+\.|$)/gs, (match, num, content) => {
+      return `<li>${content.trim()}</li>`;
+    });
+    
+    // Wrap lists in ol tags
+    if (formattedText.includes("<li>")) {
+      formattedText = formattedText.replace(/(<li>.*?<\/li>)+/gs, "<ol>$&</ol>");
+    }
+    
+    // Wrap content in paragraph tags
+    if (!formattedText.startsWith("<p>")) {
+      formattedText = `<p>${formattedText}</p>`;
+    }
+    
+    return formattedText;
+  };
+
   const handleSubmit = () => {
     if (!questionText.trim()) return;
 
@@ -71,7 +103,8 @@ const AskAIButton = ({ user }: Props) => {
     startTransition(async () => {
       try {
         const response = await askAIAboutNotesAction(newQuestions, responses);
-        setResponses((prev) => [...prev, response]);
+        // Format the response before adding it to the state
+        setResponses((prev) => [...prev, formatResponse(response)]);
       } catch (err) {
         setError((err as Error).message);
       } finally {
@@ -110,25 +143,36 @@ const AskAIButton = ({ user }: Props) => {
           </DialogDescription>
         </DialogHeader>
 
-        <div className="mt-4 flex flex-col gap-8">
+        <div className="mt-4 flex flex-col gap-6">
           {questions.map((question, index) => (
             <Fragment key={index}>
-              <p className="bg-muted text-muted-foreground ml-auto max-w-[60%] rounded-md px-2 py-1 text-sm">
-                {question}
-              </p>
+              {/* User question - styled with blue background and right alignment */}
+              <div className="flex justify-end">
+                <div className="bg-blue-100 text-gray-800 max-w-[70%] rounded-lg px-4 py-2 shadow-sm">
+                  {question}
+                </div>
+              </div>
+              
+              {/* AI response - styled with light gray background and left alignment */}
               {responses[index] && (
-                <p
-                  className="bot-response text-muted-foreground text-sm"
-                  dangerouslySetInnerHTML={{ __html: responses[index] }}
-                />
+                <div className="flex">
+                  <div className="bg-gray-100 text-gray-800 max-w-[70%] rounded-lg px-4 py-3 shadow-sm">
+                    <div 
+                      className="bot-response prose prose-sm max-w-none"
+                      dangerouslySetInnerHTML={{ __html: responses[index] }}
+                    />
+                  </div>
+                </div>
               )}
             </Fragment>
           ))}
+          
           {isPending && (
-            <div className="flex items-center gap-2 text-sm">
-              <Spinner /> Thinking...
+            <div className="flex items-center gap-2 px-3 py-2 text-sm">
+              <Spinner /> <span className="text-gray-600">Thinking...</span>
             </div>
           )}
+          
           {error && (
             <div className="text-red-500 p-2 bg-red-50 rounded-md">
               Error: {error}
