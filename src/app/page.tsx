@@ -1,42 +1,59 @@
-import React from 'react'
+// app/page.tsx or app/somepath/page.tsx
+
+import { redirect } from "next/navigation";
 import { getUser } from './auth/server';
 import { prisma } from '@/db/prisma';
 import AskAIButton from '@/components/AskAIButton';
 import NewNoteButton from '@/components/NewNoteButton';
 import NoteTextInput from '@/components/NoteTextInput';
 
-
-type Props = {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-};
-
-async function HomePage({ searchParams }: Props) {
-  const noteIdParam = (await searchParams).noteId;
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined }
+}) {
   const user = await getUser();
+  if (!user) {
+    redirect("/login");
+  }
 
-  // if noteIdParam is an array, use the first element as the noteId
-  // this is because the URL parameter could be an array if there are multiple query params with the same name
+  const noteIdParam = searchParams.noteId;
   const noteId = Array.isArray(noteIdParam)
-    ? noteIdParam![0]
+    ? noteIdParam[0]
     : noteIdParam || "";
 
-  // find the note with the given id, if it belongs to the current user
-  const note = await prisma.note.findUnique({
-    where: { id: noteId, authorId: user?.id },
-  });
+  let note = null;
+
+  if (noteId) {
+    note = await prisma.note.findUnique({
+      where: { id: noteId, authorId: user.id },
+    });
+  }
+
+  if (!note) {
+    note = await prisma.note.findFirst({
+      where: { authorId: user.id },
+      orderBy: { createdAt: "desc" },
+    });
+
+    if (!note) {
+      note = await prisma.note.create({
+        data: {
+          authorId: user.id,
+          text: "",
+        },
+      });
+    }
+    redirect(`/?noteId=${note.id}`);
+  }
+
   return (
     <div className='flex h-full flex-col items-center gap-4'>
       <div className="flex w-full max-w-4xl justify-end gap-2">
-
-      <AskAIButton user={user} />
-      <NewNoteButton user= {user} />
-        
+        <AskAIButton user={user} />
+        <NewNoteButton user={user} />
       </div>
-
-      <NoteTextInput noteId={noteId} startingNoteText={note?.text || ""} />
-
+      <NoteTextInput noteId={note.id} startingNoteText={note.text || ""} />
     </div>
-  )
+  );
 }
-
-export default HomePage
