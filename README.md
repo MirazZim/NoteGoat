@@ -1,10 +1,8 @@
-[![NoteGoat](https://tse3.mm.bing.net/th?id=OIP._kxKqYqolfcKmSQZqQJ-KAHaOe\&pid=Api)](https://www.notegoat.ai/)
 
-Here's a README tailored for your NoteGoat project, modeled after the Momentify example:
-
----
 
 # 📝 NoteGoat — AI-Powered Note-Taking Platform
+
+[![NoteGoat](https://tse3.mm.bing.net/th?id=OIP._kxKqYqolfcKmSQZqQJ-KAHaOe\&pid=Api)](https://www.notegoat.ai/)
 
 NoteGoat is an AI-driven web application designed to streamline the process of capturing and organizing notes. Built with Next.js, Prisma, and Supabase, it offers a modern interface and robust backend to enhance your note-taking experience.([NoteGoat.ai][1])
 
