@@ -4,11 +4,11 @@
 
 [![NoteGoat](https://tse3.mm.bing.net/th?id=OIP._kxKqYqolfcKmSQZqQJ-KAHaOe\&pid=Api)](https://www.notegoat.ai/)
 
-NoteGoat is an AI-driven web application designed to streamline the process of capturing and organizing notes. Built with Next.js, Prisma, and Supabase, it offers a modern interface and robust backend to enhance your note-taking experience.([NoteGoat.ai][1])
+NoteGoat is an AI-driven web application designed to streamline the process of capturing and organizing notes. Built with Next.js, Prisma, and Supabase, it offers a modern interface and robust backend to enhance your note-taking experience.
 
 ## 🌐 Live Demo
 
-**Live Link:** [note-goat.vercel.app](https://note-goat.vercel.app)
+**Live Link:** [NoteGoat]([https://note-goat.vercel.app](https://note-goat-git-main-mirazzims-projects.vercel.app/))
 
 ## ⚙️ Key Features
 
