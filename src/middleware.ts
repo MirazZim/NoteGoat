@@ -12,6 +12,21 @@ export const config = {
   ],
 };
 
+async function getAuthenticatedUser(supabase: any) {
+  try {
+    const { data: { user }, error } = await supabase.auth.getUser();
+    if (error) {
+      // This includes AuthSessionMissingError - just return null instead of throwing
+      return null;
+    }
+    return user;
+  } catch (error) {
+    console.error("Error getting authenticated user:", error);
+    // Catch any other auth-related errors
+    return null;
+  }
+}
+
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
@@ -45,9 +60,7 @@ export async function updateSession(request: NextRequest) {
     request.nextUrl.pathname === "/sign-up";
 
   if (isAuthRoute) {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const user = await getAuthenticatedUser(supabase);
     if (user) {
       return NextResponse.redirect(
         new URL("/", process.env.NEXT_PUBLIC_BASE_URL),
@@ -58,9 +71,7 @@ export async function updateSession(request: NextRequest) {
   const { searchParams, pathname } = new URL(request.url);
 
   if (!searchParams.get("noteId") && pathname === "/") {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const user = await getAuthenticatedUser(supabase);
 
     if (user) {
       const { newestNoteId } = await fetch(

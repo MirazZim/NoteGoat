@@ -1,6 +1,4 @@
-// app/page.tsx or app/somepath/page.tsx
 
-import { redirect } from "next/navigation";
 import { getUser } from './auth/server';
 import { prisma } from '@/db/prisma';
 import NewNoteButton from '@/components/NewNoteButton';
@@ -23,9 +21,8 @@ export default async function HomePage({ searchParams }: Props) {
     where: { id: noteId, authorId: user?.id },
   });
 
-  if (!note) {
-    redirect("/?noteId=${note.id}");
-  }
+  
+
 
   return (
     <div className='flex h-full flex-col items-center gap-4'>
@@ -33,7 +30,7 @@ export default async function HomePage({ searchParams }: Props) {
         <AskAIButton user={user} />
         <NewNoteButton user={user} />
       </div>
-      <NoteTextInput noteId={note.id} startingNoteText={note.text || ""} />
+      <NoteTextInput noteId={noteId} startingNoteText={note?.text || ""} />
     </div>
   );
 }

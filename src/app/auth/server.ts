@@ -33,12 +33,21 @@ export async function createClient() {
 export async function getUser() {
    const {auth} = await createClient()
 
-   const userObject = await auth.getUser()
+   try {
+     const userObject = await auth.getUser()
 
-   if(userObject.error) {
-    console.log(userObject.error)
-    return null
+     if(userObject.error) {
+       // Don't log auth session missing errors as they're expected when logged out
+       if (userObject.error.message !== "Auth session missing!") {
+         console.log(userObject.error)
+       }
+       return null
+     }
+
+     return userObject.data.user
+   } catch (error) {
+     console.error("Error getting user:", error)
+     // Catch any auth errors and return null instead of throwing
+     return null
    }
-
-   return userObject.data.user
 }
