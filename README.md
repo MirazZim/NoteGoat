@@ -8,7 +8,7 @@ NoteGoat is an AI-driven web application designed to streamline the process of c
 
 ## 🌐 Live Demo
 
-**Live Link:** [NoteGoat]((https://note-goat-git-main-mirazzims-projects.vercel.app/))
+**Live Link:** [NoteGoat](https://note-goat-git-main-mirazzims-projects.vercel.app/)
 
 ## ⚙️ Key Features
 
