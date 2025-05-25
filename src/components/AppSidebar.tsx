@@ -1,60 +1,58 @@
 import { getUser } from "@/app/auth/server";
 import {
-    Sidebar,
-    SidebarContent,
-    SidebarGroup,
-    SidebarGroupLabel,
-  } from "@/components/ui/sidebar"
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupLabel,
+} from "@/components/ui/sidebar";
 import { prisma } from "@/db/prisma";
 import { Note } from "@prisma/client";
 import Link from "next/link";
 import SidebarGroupContent from "./SidebarGroupContent";
-  
- async function AppSidebar() {
+import { PencilLine, LogIn } from "lucide-react"; // Iconic flair
 
-    // Get the user from the auth server
-    const user = await getUser();
+async function AppSidebar() {
+  const user = await getUser();
+  let notes: Note[] = [];
 
-    // Start with an empty array of notes
-    let notes: Note[] = [];
-
-    // If the user is logged in, fetch all their notes
-    if (user) {
-        // Use Prisma to query the database
-        notes = await prisma.note.findMany({
-          // Only find notes where the author ID matches the user's ID
-          where: {
-            authorId: user.id,
-          },
-          // Sort the notes by their updated date, newest first
-          orderBy: {
-            updatedAt: "desc",
-          },
-        });
-      }
-    
-
-    return (
-        <Sidebar>
-        <SidebarContent className="custom-scrollbar">
-          <SidebarGroup>
-            <SidebarGroupLabel className="mb-2 mt-2 text-lg">
-              {user ? (
-                "Your Notes"
-              ) : ( 
-                <p>
-                  <Link href="/login" className="underline">
-                    Login
-                  </Link>{" "}
-                  to see your notes
-                </p>
-              )}
-            </SidebarGroupLabel>
-            {user && <SidebarGroupContent notes={notes} />}
-          </SidebarGroup>
-        </SidebarContent>
-      </Sidebar>
-    )
+  if (user) {
+    notes = await prisma.note.findMany({
+      where: { authorId: user.id },
+      orderBy: { updatedAt: "desc" },
+    });
   }
 
-  export default AppSidebar
+  return (
+    <Sidebar className="bg-white/60 dark:bg-zinc-900/70 backdrop-blur-md border-r border-zinc-200 dark:border-zinc-800 shadow-md">
+      <SidebarContent className="custom-scrollbar px-4 py-6 space-y-6">
+        <SidebarGroup>
+          <SidebarGroupLabel className="flex items-center gap-2 text-lg font-semibold tracking-tight bg-gradient-to-r from-indigo-500 to-blue-500 text-white px-3 mb-4 py-2 rounded-lg shadow">
+            <PencilLine className="w-5 h-5 gap-2" />
+            {user ? "Your Notes" : "Welcome"}
+          </SidebarGroupLabel>
+
+          {user ? (
+            <SidebarGroupContent notes={notes} />
+          ) : (
+            <div className="mt-4 text-sm text-zinc-600 dark:text-zinc-400 flex flex-col items-start gap-2">
+              <p className="flex items-center gap-2">
+                <LogIn className="w-4 h-4" />
+                <Link
+                  href="/login"
+                  className="underline underline-offset-4 text-blue-600 dark:text-blue-400 hover:opacity-80"
+                >
+                  Log in to access your notes
+                </Link>
+              </p>
+              <p className="italic text-xs text-zinc-500 dark:text-zinc-500">
+                Your thoughts belong here ✨
+              </p>
+            </div>
+          )}
+        </SidebarGroup>
+      </SidebarContent>
+    </Sidebar>
+  );
+}
+
+export default AppSidebar;

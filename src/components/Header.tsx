@@ -43,21 +43,36 @@ const Header = async () => {
       </div>
 
       {/* Right side: Actions */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 sm:gap-4">
         {user ? (
           <LogOutButton />
         ) : (
           <>
+            {/* Sign Up Button */}
             <Button
               asChild
-              className="rounded-full px-5 py-2 font-medium text-base bg-gradient-to-tr from-indigo-500 to-blue-400 text-white shadow-md hover:from-indigo-600 hover:to-blue-500 transition"
+              className="
+          hidden sm:inline-flex
+          rounded-full px-4 py-2 text-sm font-medium
+          text-white bg-gradient-to-r from-indigo-500 to-blue-500
+          hover:from-indigo-600 hover:to-blue-600
+          shadow hover:shadow-lg transition-all duration-200
+        "
             >
-              <Link href="/sign-up" className="hidden sm:block">Sign Up</Link>
+              <Link href="/sign-up">Sign Up</Link>
             </Button>
+
+            {/* Login Button */}
             <Button
               asChild
-              variant="outline"
-              className="rounded-full px-5 py-2 border-2 border-blue-400 text-blue-500 font-medium text-base hover:bg-blue-50 dark:hover:bg-zinc-800 transition"
+              variant="ghost"
+              className="
+          rounded-full px-4 py-2 text-sm font-medium
+          text-blue-600 dark:text-blue-400
+          border border-blue-400 dark:border-blue-500
+          hover:bg-blue-50 dark:hover:bg-zinc-900
+          transition-all duration-200
+        "
             >
               <Link href="/login">Login</Link>
             </Button>
